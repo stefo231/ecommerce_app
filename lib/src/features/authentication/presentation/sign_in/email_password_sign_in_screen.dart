@@ -88,7 +88,6 @@ class _EmailPasswordSignInContentsState
       if (success) {
         widget.onSignedIn?.call();
       }
-      widget.onSignedIn?.call();
     }
   }
 
@@ -111,7 +110,6 @@ class _EmailPasswordSignInContentsState
     ref
         .read(emailPasswordSignInControllerProvider(widget.formType).notifier)
         .updateFormType(formType);
-
     // * Clear the password field when doing so
     _passwordController.clear();
   }
@@ -119,9 +117,10 @@ class _EmailPasswordSignInContentsState
   @override
   Widget build(BuildContext context) {
     ref.listen<AsyncValue>(
-        emailPasswordSignInControllerProvider(widget.formType)
-            .select((state) => state.value),
-        (_, state) => state.showAlertDialogOnError(context));
+      emailPasswordSignInControllerProvider(widget.formType)
+          .select((state) => state.value),
+      (_, state) => state.showAlertDialogOnError(context),
+    );
     final state =
         ref.watch(emailPasswordSignInControllerProvider(widget.formType));
     return ResponsiveScrollableCard(

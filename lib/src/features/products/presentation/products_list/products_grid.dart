@@ -18,31 +18,29 @@ class ProductsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productsListValue = ref.watch(productListFutureProvider);
+    final productsListValue = ref.watch(productsListStreamProvider);
     return AsyncValueWidget<List<Product>>(
       value: productsListValue,
-      data: (products) {
-        return products.isEmpty
-            ? Center(
-                child: Text(
-                  'No products found'.hardcoded,
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-              )
-            : ProductsLayoutGrid(
-                itemCount: products.length,
-                itemBuilder: (_, index) {
-                  final product = products[index];
-                  return ProductCard(
-                    product: product,
-                    onPressed: () => context.goNamed(
-                      AppRoute.product.name,
-                      params: {'id': product.id},
-                    ),
-                  );
-                },
-              );
-      },
+      data: (products) => products.isEmpty
+          ? Center(
+              child: Text(
+                'No products found'.hardcoded,
+                style: Theme.of(context).textTheme.headline4,
+              ),
+            )
+          : ProductsLayoutGrid(
+              itemCount: products.length,
+              itemBuilder: (_, index) {
+                final product = products[index];
+                return ProductCard(
+                  product: product,
+                  onPressed: () => context.goNamed(
+                    AppRoute.product.name,
+                    params: {'id': product.id},
+                  ),
+                );
+              },
+            ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FakeProductsRepository {
   final List<Product> _products = kTestProducts;
+
   List<Product> getProductsList() {
     return _products;
   }
@@ -14,17 +15,16 @@ class FakeProductsRepository {
 
   Future<List<Product>> fetchProductsList() async {
     await Future.delayed(const Duration(seconds: 2));
-    // throw Exception('Could not fetch products');
     return Future.value(_products);
   }
 
-  Stream<List<Product>> watchProductList() async* {
+  Stream<List<Product>> watchProductsList() async* {
     await Future.delayed(const Duration(seconds: 2));
     yield _products;
   }
 
   Stream<Product?> watchProduct(String id) {
-    return watchProductList()
+    return watchProductsList()
         .map((products) => products.firstWhere((product) => product.id == id));
   }
 }
@@ -33,23 +33,20 @@ final productsRepositoryProvider = Provider<FakeProductsRepository>((ref) {
   return FakeProductsRepository();
 });
 
-final productListStreamProvider =
+final productsListStreamProvider =
     StreamProvider.autoDispose<List<Product>>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
-  return productsRepository.watchProductList();
+  return productsRepository.watchProductsList();
 });
 
-final productListFutureProvider =
+final productsListFutureProvider =
     FutureProvider.autoDispose<List<Product>>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
   return productsRepository.fetchProductsList();
 });
 
-final productProvider = StreamProvider.autoDispose.family<Product?, String>(
-  (ref, id) {
-    final productsRepository = ref.watch(productsRepositoryProvider);
-    return productsRepository.watchProduct(id);
-  },
-  disposeDelay: const Duration(seconds: 10),
-  cacheTime: const Duration(seconds: 10),
-);
+final productProvider =
+    StreamProvider.autoDispose.family<Product?, String>((ref, id) {
+  final productsRepository = ref.watch(productsRepositoryProvider);
+  return productsRepository.watchProduct(id);
+});

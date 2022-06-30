@@ -8,8 +8,8 @@ class EmailPasswordSignInController
     required EmailPasswordSignInFormType formType,
     required this.authRepository,
   }) : super(EmailPasswordSignInState(formType: formType));
-
   final FakeAuthRepository authRepository;
+
   Future<bool> submit(String email, String password) async {
     state = state.copyWith(value: const AsyncValue.loading());
     final value = await AsyncValue.guard(() => _authenticate(email, password));
@@ -21,16 +21,13 @@ class EmailPasswordSignInController
     switch (state.formType) {
       case EmailPasswordSignInFormType.signIn:
         return authRepository.signInWithEmailAndPassword(email, password);
-
       case EmailPasswordSignInFormType.register:
         return authRepository.createUserWithEmailAndPassword(email, password);
     }
   }
 
   void updateFormType(EmailPasswordSignInFormType formType) {
-    state = state.copyWith(
-      formType: formType,
-    );
+    state = state.copyWith(formType: formType);
   }
 }
 
@@ -39,7 +36,7 @@ final emailPasswordSignInControllerProvider = StateNotifierProvider.autoDispose
         EmailPasswordSignInFormType>((ref, formType) {
   final authRepository = ref.watch(authRepositoryProvider);
   return EmailPasswordSignInController(
-    formType: formType,
     authRepository: authRepository,
+    formType: formType,
   );
 });

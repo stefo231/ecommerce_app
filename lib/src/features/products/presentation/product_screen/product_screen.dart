@@ -30,21 +30,19 @@ class ProductScreen extends StatelessWidget {
           final productValue = ref.watch(productProvider(productId));
           return AsyncValueWidget<Product?>(
             value: productValue,
-            data: (product) {
-              return product == null
-                  ? EmptyPlaceholderWidget(
-                      message: 'Product not found'.hardcoded,
-                    )
-                  : CustomScrollView(
-                      slivers: [
-                        ResponsiveSliverCenter(
-                          padding: const EdgeInsets.all(Sizes.p16),
-                          child: ProductDetails(product: product),
-                        ),
-                        ProductReviewsList(productId: productId),
-                      ],
-                    );
-            },
+            data: (product) => product == null
+                ? EmptyPlaceholderWidget(
+                    message: 'Product not found'.hardcoded,
+                  )
+                : CustomScrollView(
+                    slivers: [
+                      ResponsiveSliverCenter(
+                        padding: const EdgeInsets.all(Sizes.p16),
+                        child: ProductDetails(product: product),
+                      ),
+                      ProductReviewsList(productId: productId),
+                    ],
+                  ),
           );
         },
       ),
